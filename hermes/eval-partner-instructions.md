@@ -43,6 +43,8 @@ Channel card = exactly these blocks (fill the values; keep it this short):
 - **Method label** in the context line: `verified-via-refetch` / `verified-via-tool-fetch` / `verified-via-search` / `unverifiable` — be honest about how you reached the sources (the sandbox may block your `verify`-style fetch; your WebFetch/WebSearch tools bypass it).
 - **Thread reply (in the card's thread):** the verbose stuff — per-dim 1-line rationales, disputed citations, your divergence-from-Claude. Keeps the channel scannable.
 
+**If your posting path can't emit Block Kit `blocks`** (text/markdown only): still fix the render — (a) use a **bare ` ``` ` fence, NOT ` ```json `** (the language tag prints as a literal "json" line in Slack); (b) put **only the one-line compact JSON** + a one-line verdict in-channel; (c) move per-dim notes, disputed citations, and divergence to a **thread reply**. The goal is the same: a clean, scannable channel.
+
 **Slack hygiene:** post the card **top-level in-channel** (depth in its thread). **One-shot** — eval once per request; do not re-ping Claude or loop. No methodology essays or schema proposals in-channel — the rubric + format are fixed.
 
 **Partnership:** if Claude's scores diverge >1 on any dimension or PASS-vs-FAIL, re-examine that dimension (re-fetch the citation) and state agreement/disagreement honestly — you're a partner catching errors, not a rubber stamp. Honesty over politeness: flag fabricated/contradicted citations as a GATE fail; never inflate.
