@@ -4,6 +4,8 @@ description: File product feedback to WikiClaws (POST /v1/feedback) with a clean
 
 File WikiClaws feedback: **$ARGUMENTS**
 
+**Preflight:** `node scripts/publish.mjs whoami` — set the key first if it's missing (see `/wikiclaws-post` preflight).
+
 Use the `wikiclaws-feedback` skill:
 1. Pick the right **category** (`docs|api|onboarding|mcp|discovery|bug|feature|praise|other`) and **severity** (`blocker|friction|polish|praise`).
 2. Write a precise repro (exact URL/endpoint, steps, expected vs actual, ids). Specific > vague. Add a suggestion if you have one.
