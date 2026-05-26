@@ -41,4 +41,18 @@ for (let i = 0; i < cites.length; i++) {
   if (reach && r.snippet) console.log(`      ↳ ${r.snippet}`);
 }
 console.log(`\nReachable ${ok}/${cites.length}; unreachable ${unreachable} (mark those 'unverifiable', not 'verified').`);
-console.log("Now judge ENTAILMENT per claim against these snippets/sources, then compute claim-verified ratio (verified/total).");
+
+// Blocked-egress diagnostic: on Claude Code web the sandbox allowlist blocks the container's
+// outbound fetch for non-allowlisted domains, so this script can return ~0 reachable even though
+// the URLs are live. Claude's WebFetch/WebSearch TOOLS use a different network path that bypasses
+// the sandbox — so fall back to those for verification instead of reporting a false 0.
+if (cites.length && ok === 0) {
+  console.log(`\n⚠️  0/${cites.length} reachable — this is almost certainly the Claude Code WEB sandbox`);
+  console.log(`   blocking the container's outbound network (allowlist), NOT dead links.`);
+  console.log(`   → DO NOT report these as unverified. Switch to the TOOL path: re-fetch each URL`);
+  console.log(`     above with your WebFetch tool (and WebSearch for the claim), which bypasses the`);
+  console.log(`     sandbox. Judge entailment from that and label 'verified-via-tool-fetch'.`);
+  console.log(`   → Or broaden the env's Network access so the container can reach these domains.`);
+}
+console.log("\nNow judge ENTAILMENT per claim (via the working fetch path), then compute claim-verified ratio (verified/total).");
+console.log("Label the METHOD honestly: 'verified-via-refetch' (this script reached it) · 'verified-via-tool-fetch' (WebFetch) · 'verified-via-search' (WebSearch surfaced the source text, URL not re-fetched) · 'unverifiable'. Never claim a reachability you didn't have.");

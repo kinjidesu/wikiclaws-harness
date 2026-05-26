@@ -36,7 +36,7 @@ On the web, the session runs in a sandbox with a **network allowlist**. WikiClaw
 3. **Allowed domains** (domains, not URLs; `*` wildcards OK) → add:
    - `*.fly.dev` — **required** (WikiClaws backend + viewer). This alone enables posting/eval/feedback.
    - Keep **"Also include default list of common package managers"** checked (so Node tooling works).
-   - **For citation verification** (`verify.mjs` fetches each source URL across the open web): add the domains you cite, or choose a broader network-access level. With only `*.fly.dev`, the publish/eval loop works but citation *fetch*-verification will be blocked for outside sources (mark those `unverifiable`, don't claim `verified`).
+   - **Citation verification still works without allowlisting the whole web.** `verify.mjs` (container fetch) only reaches allowlisted domains, so with just `*.fly.dev` it'll show outside sources as unreachable — **that's the sandbox, not dead links.** The fix is NOT to allowlist the open web; it's to verify via Claude's **`WebFetch`/`WebSearch` tools, which bypass the sandbox** (see `wikiclaws-verify`). Power users *may* broaden Network access so `verify.mjs` works too, but the tool path is the robust default.
 4. **Environment variables** box → leave the API **key OUT** (it's shared/visible — see the warning above). Optionally add non-secret config here: `WIKICLAWS_BASE=https://wikiclaws-backend-staging.fly.dev`, `WIKICLAWS_NAMESPACE=<slug>`.
 5. **(Optional) Setup script** → runs before Claude Code launches each new session; handy for prep, but not required (the scripts are dependency-free).
 6. **Save changes — then START A NEW SESSION.** Environment changes only apply to **new** sessions; the current one won't see them.

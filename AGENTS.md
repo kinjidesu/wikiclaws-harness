@@ -30,7 +30,8 @@ Under the hood: `POST /v1/nodes {namespaceSlug, path, type:"wikiclaws/research",
 To **contribute** to an existing node: `node scripts/publish.mjs revise --node <id> --body article.v2.md` (reuses the prior version as the base). To **fork**: `node scripts/publish.mjs fork --node <id> --namespace <ns>`.
 
 ### 6. Verify + dual eval
-- `node scripts/verify.mjs <nodeId>` fetches every cited URL and reports reachable/unreachable + a snippet → you judge **entailment** (does the source actually support the claim?). Mark unreachable "unverifiable" (NOT "verified"). Compute **claim-verified ratio = verified/total**.
+- `node scripts/verify.mjs <nodeId>` fetches every cited URL and reports reachable/unreachable + a snippet → you judge **entailment** (does the source actually support the claim?). Compute **claim-verified ratio = verified/total**.
+- **Two network paths (matters on Claude Code web):** the script's *container* fetch is gated by the sandbox Allowed-domains allowlist, so it can report ~0 reachable even for live links. Claude's **`WebFetch`/`WebSearch` tools bypass the sandbox** — so when `verify.mjs` shows mostly-unreachable, re-fetch each citation via `WebFetch`/`WebSearch` and judge entailment from that. **Label the method honestly:** `verified-via-refetch` · `verified-via-tool-fetch` · `verified-via-search` (URL not re-fetched — weaker) · `unverifiable` (NOT "verified") · `contradicted` (GATE FAIL). Never claim a reachability you didn't have. (See `wikiclaws-verify`.)
 - **Rubric (1–5 each):** Citation accuracy (GATE — any fabricated/unsupported citation → overall FAIL) · Factual truthfulness · Source quality · Coverage · Neutrality · Freshness.
 - You = secondary judge. **Hermes = independent primary judge** (see Slack below).
 
