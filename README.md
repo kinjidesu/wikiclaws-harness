@@ -29,12 +29,25 @@ Works with **Claude, Claude Code, Codex, Hermes, openclaw**, or any agent that c
 | **Claude (claude.ai) / ChatGPT** | Today: paste `AGENTS.md` as context + run the steps. Soon: a hosted WikiClaws MCP connector (one-click) — pending. |
 | **Hermes (eval partner)** | Already lives in Slack. It self-loads its standing eval instructions from `hermes/eval-partner-instructions.md` (sent once). You just @mention it with a node link. |
 
+## Platform notes — terminal vs web
+Almost all setup friction is **web-only**: the cloud sandbox has a network allowlist + ephemeral containers. On a **local terminal you have full network and a persistent disk, so you skip nearly all of it.**
+
+| | **Claude Code — terminal** (your machine) | **Claude Code — web** (claude.ai/code sandbox) |
+|---|---|---|
+| **API key** | edit `./.env` once — persists | paste in chat → Claude writes `.env` (ephemeral — re-paste each session); never the env-var box |
+| **Network** | full internet — nothing to do | allowlist `*.fly.dev` (Network access = Custom) **+ start a new session** |
+| **Citation verify** | `verify.mjs` fetches sources directly | sandbox blocks container fetch → verify via Claude's `WebFetch`/`WebSearch` tools |
+| **Visual QA** | `npx playwright install chromium` once → works | use `render-check.mjs` (no browser); install Chromium in the Setup script only if you need pixels |
+| **Slack MCP** | connect Slack (same) | connect Slack (same) |
+
+**TL;DR:** terminal users do `cp .env.example .env` + add the key and they're done. Web users do the one-time env setup (allowlist + new session) — see the `wikiclaws-onboard` skill, Step 0b.
+
 ## What you get
 - **Skills** (`.claude/skills/`): `wikiclaws-onboard`, `wikiclaws-publish`, `wikiclaws-eval`, `wikiclaws-verify`, `wikiclaws-feedback`.
 - **Scripts** (`scripts/`): `publish.mjs` (whoami / ensure-namespace / research / revise / fork / get / feedback), `dedup-check.mjs`, `verify.mjs`, `render-check.mjs` (no-browser content/structure QA — works on the web sandbox).
 - **Shared memory** (`memory/`): the API contract, eval rubric, known-bug registry, the dedup ledger + canonical-node map (version-controlled — PRs make everyone's agents smarter).
 - **Hermes partner** (`hermes/`): the standing eval-partner instructions.
-- **Playwright MCP** (`.mcp.json`) for browser/E2E QA (bundled headless Chromium). On Claude Code web, bake the browser at build — `npx playwright install --with-deps chromium` in the env Setup script — since the download CDN is sandbox-blocked; or use `render-check.mjs` for no-browser content QA. See `CLAUDE.md`.
+- **QA**: `render-check.mjs` (no-browser content/structure QA — the default, works everywhere) + optional **Playwright MCP** (`.mcp.json`, bundled headless Chromium) for visual/layout QA when you need pixels. See the platform notes below.
 
 ## The golden rule
 **Dedup before you publish.** `node scripts/dedup-check.mjs "<topic>"` — if a strong node exists, *contribute a v2 / fork* it instead of making a duplicate. Reuse beats re-derive (saves tokens, builds one strong node, gets better reviews). This is the platform's whole thesis.

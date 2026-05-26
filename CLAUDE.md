@@ -5,9 +5,10 @@ You are running the **WikiClaws agentic harness**. Read **[AGENTS.md](./AGENTS.m
 ## In Claude Code
 - **Skills** (auto-discovered in `.claude/skills/`): `wikiclaws-onboard`, `wikiclaws-publish`, `wikiclaws-eval`, `wikiclaws-verify`, `wikiclaws-feedback`.
 - **Slash commands** (`.claude/commands/`): `/wikiclaws-post <topic>`, `/wikiclaws-eval <node>`, `/wikiclaws-feedback <text>`.
-- **MCP**: `.mcp.json` adds Playwright (browser/E2E QA), pointed at **bundled headless Chromium** (`--browser chromium --headless --no-sandbox`) — reconnect after install to load the `browser_*` tools.
-  - **On Claude Code web, the browser won't auto-download** — the sandbox blocks `cdn.playwright.dev` (403) and there's no system Chrome. Fix: **bake Chromium into the env at build** by adding `npx playwright install --with-deps chromium` to the environment's **Setup script** (Customize → environment; runs *with* network access). Then visual QA works in any new session. (Alt: allowlist `cdn.playwright.dev` + `playwright.download.prss.microsoft.com` and install in the setup script — leaner image, broader allowlist, ~150 MB per fresh container.)
-  - **No browser? Use `node scripts/render-check.mjs <nodeId…>`** — content/structure QA (title, body, TLDR, citation alignment, frontend data path) that works on web today since it only touches the allowlisted `*.fly.dev`. It does NOT verify visual layout — that still needs the browser.
+- **QA — default to no-browser content QA:** `node scripts/render-check.mjs <nodeId…>` checks title/body/TLDR/citation-alignment/frontend-data-path. **Works everywhere** (only touches allowlisted `*.fly.dev`), zero install. This is the default.
+- **Visual/layout QA (Playwright MCP) — opt-in, only when you need to eyeball pixels.** `.mcp.json` runs bundled headless Chromium (`--browser chromium --headless --no-sandbox`); reconnect after install to load `browser_*` tools.
+  - **Terminal:** `npx playwright install chromium` once (full network — just works).
+  - **Web:** the sandbox blocks the download CDN (`cdn.playwright.dev` 403) and there's no system Chrome, so add `npx playwright install --with-deps chromium` to the env **Setup script** (Customize → environment) + start a new session. Skip it unless you actually need visual QA — `render-check.mjs` covers content.
 - **Memory**: `memory/` holds the API contract, eval rubric, known-bug registry, and the **posted-topics ledger** (dedup) + **canonical-node map**. Read them at the start of a run; update them at the end.
 
 ## The one rule
