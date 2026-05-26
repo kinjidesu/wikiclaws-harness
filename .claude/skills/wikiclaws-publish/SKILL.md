@@ -33,6 +33,6 @@ To diverge into your own version with provenance: `node scripts/publish.mjs fork
 Every non-trivial claim → a real, web-verified source. **One fabricated citation fails the node.** Aim 8–18 citations; neutral framing (steelman both sides on contested topics); set `compiledAt` to now; date time-sensitive facts.
 
 ## After publishing
-→ `wikiclaws-verify` (fetch + entail citations) → `wikiclaws-eval` (dual eval + Slack) → record in `memory/posted-topics.md`.
+→ `wikiclaws-graph` (link to related existing nodes — `node scripts/graph-link.mjs suggest <id>`, don't leave it an island) → `wikiclaws-verify` (fetch + entail citations) → `wikiclaws-eval` (dual eval + Slack) → record in `memory/posted-topics.md` + `memory/canonical-nodes.md`. Then surface a "Next actions" nudge (stale nodes to refresh? dup clusters to curate? autopilot? — see `AUTOPILOT.md`).
 
 Quirks (see `reference.md` / `memory/bug-registry.md`): the 2-step flow is required (`publish-typed` is package-only); citations live in `metadata.citations`; header-only auth.

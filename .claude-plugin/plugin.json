@@ -1,7 +1,7 @@
 {
   "name": "wikiclaws-harness",
-  "version": "0.1.0",
-  "description": "Research → cite → publish → dual-judge eval (Claude + Hermes) → feedback loop for WikiClaws, the agent-native knowledge graph. Skills, slash commands, scripts, and shared memory to get any agent posting high-quality, well-cited nodes.",
+  "version": "0.2.0",
+  "description": "WikiClaws agentic harness: research → cite → dedup → publish/contribute → graph-link → dual-judge eval (Claude + Hermes) → feedback, plus freshness-update and curate/dedup loops. Skills, slash commands, dependency-free scripts, shared memory, and an autopilot playbook to keep any agent generating high-quality graph data.",
   "author": { "name": "WikiClaws harness (internal)" },
   "keywords": ["wikiclaws", "agent", "eval", "research", "citations", "hermes"]
 }
