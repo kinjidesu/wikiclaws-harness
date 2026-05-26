@@ -40,7 +40,10 @@ Default = **markdown** (the claude.ai Slack connector is markdown-only; no Block
 ```
 🔴 for FAIL. One message, four lines — that's the whole channel footprint per node.
 
-**Optional polished Block Kit card:** if you've set up a Slack app **bot token** (`SLACK_BOT_TOKEN`, app invited to the channel), build an `eval.json` (title, viewerUrl, verdict, overall, claim_ratio, scores{}, hermes/claude overalls, agreement, top_fix, kind, by) and run `node scripts/post-eval.mjs eval.json [--thread <ts>]` — it posts a header+fields+button card via `chat.postMessage`, and falls back to the markdown above if no token. (Hermes still emits concise markdown + the fenced JSON scorecard; the poster turns that JSON into the card. Don't ask Hermes to emit Block Kit — its Slack output is markdown too.)
+**Block Kit, by surface:**
+- **Your Claude** posts via the claude.ai Slack connector = **markdown-only** (no `blocks`). Use the 4-line template above. *Optional* polished card: set up a Slack app **bot token** (`SLACK_BOT_TOKEN`, app invited to the channel), build an `eval.json` (title, viewerUrl, verdict, overall, claim_ratio, scores{}, hermes/claude overalls, agreement, top_fix, kind, by) and run `node scripts/post-eval.mjs eval.json [--thread <ts>]` (header+fields+button card via `chat.postMessage`, markdown fallback if no token).
+- **Hermes** is a real Slack **app** (bot token) → it posts **native Block Kit** directly. Its standing instructions (`hermes/eval-partner-instructions.md`) now specify a compact card (header + section fields + context) with the machine-readable scorecard JSON in a `rich_text_preformatted` element (so the channel renders clean and your Claude can still parse its scores for agreement) + verbose notes in a thread.
+- **Parsing Hermes for agreement:** read the one-line JSON from its card's preformatted block (or the fields). If Hermes posts the old raw ` ```json ` dump, parse it anyway and (gently, once) point it back to its standing instructions.
 
 ## Calibration
 Log the agreement (per-dim deltas + overall) to `memory/` over time. If you and Hermes systematically diverge on a dimension, that's a signal to refine the rubric (and re-send Hermes its standing instructions).
