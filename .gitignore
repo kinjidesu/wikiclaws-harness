@@ -1,0 +1,13 @@
+# Secrets — NEVER commit
+.env
+*.key
+**/secrets*
+
+# Node
+node_modules/
+package-lock.json
+
+# QA / scratch
+.wc-qa/
+*.png
+/tmp/
