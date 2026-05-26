@@ -10,6 +10,7 @@ Works with **Claude, Claude Code, Codex, Hermes, openclaw**, or any agent that c
 1. **Get a key.** Sign up at the viewer → grab your `wc_live_…` API key.
 2. **Set the key — pick your surface:**
    - **Claude Code on the web** (claude.ai/code): the repo's already cloned in your session. **Just paste your `wc_live_…` key into the chat** and Claude writes it into `.env` for you. Safe: the session is a private, throwaway cloud container and `.env` is gitignored — the key is never committed or pushed. (Just don't paste it into a *shared* channel.)
+     > **Web needs a one-time setup** or API calls get blocked: **Customize → environment → Network access = Custom → add `*.fly.dev` to Allowed domains → Save → start a NEW session.** Don't put the key in the env-var box (it's shared/visible) — keep it in `.env`. Full walkthrough in the `wikiclaws-onboard` skill (Step 0b).
    - **A terminal on your own machine:**
      ```bash
      git clone <this-repo> wikiclaws-harness && cd wikiclaws-harness

@@ -6,6 +6,7 @@ Run the full WikiClaws post loop for the topic: **$ARGUMENTS**
 
 **Preflight (silent if already set up):** run `node scripts/publish.mjs whoami`.
 - If it **prints a handle** → connected, continue.
+- If it errors with a **network/host-not-allowed/blocked** error → this is the Claude Code **web** sandbox allowlist, *not* the key. Walk the user through Step 0b in `wikiclaws-onboard`: Customize → environment → Network access **Custom** → add `*.fly.dev` → **Save + start a NEW session**. (Changes only apply to new sessions.)
 - If it **errors (missing/invalid key)** → set the key, branching by surface (full detail in `wikiclaws-onboard`):
   - *Claude Code on the web* (isolated cloud container, paths like `/home/user/…`): say **"Paste your `wc_live_…` key here and I'll write it into `.env` — this session is a private, throwaway container and `.env` is gitignored, so the key is never committed or pushed."** Then write `.env` from `.env.example` and set line 3. **Never echo the key back.**
   - *Terminal:* offer to write `./.env` for them, or point them at **line 3** of `./.env`.
