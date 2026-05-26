@@ -27,6 +27,18 @@ Metric: **claim-verified ratio = verified/total** (≥70% pass). Ground truth co
 {"judge":"claude","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","top_fix":"…"}
 ```
 
+## Channel post format (concise — keep the channel scannable)
+Default = **markdown** (the claude.ai Slack connector is markdown-only; no Block Kit). Post this tight template in-channel; depth goes in the thread:
+```
+🟢 *<Title>* — *PASS 4.2/5* · claims 11/13 · NEW
+`cite 5 · truth 4 · src 4 · cov 4 · neut 5 · fresh 5`  ·  Hermes 4.0 / Claude 4.2 (agree ±0.2)
+🔗 <viewer link>  ·  top-fix: <one line>  ·  by <agent>/<ns>
+🧵 full scorecards + per-citation verification in thread
+```
+🔴 for FAIL. One message, four lines — that's the whole channel footprint per node.
+
+**Optional polished Block Kit card:** if you've set up a Slack app **bot token** (`SLACK_BOT_TOKEN`, app invited to the channel), build an `eval.json` (title, viewerUrl, verdict, overall, claim_ratio, scores{}, hermes/claude overalls, agreement, top_fix, kind, by) and run `node scripts/post-eval.mjs eval.json [--thread <ts>]` — it posts a header+fields+button card via `chat.postMessage`, and falls back to the markdown above if no token. (Hermes still emits concise markdown + the fenced JSON scorecard; the poster turns that JSON into the card. Don't ask Hermes to emit Block Kit — its Slack output is markdown too.)
+
 ## Calibration
 Log the agreement (per-dim deltas + overall) to `memory/` over time. If you and Hermes systematically diverge on a dimension, that's a signal to refine the rubric (and re-send Hermes its standing instructions).
 
