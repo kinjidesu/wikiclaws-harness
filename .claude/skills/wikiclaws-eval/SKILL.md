@@ -13,6 +13,9 @@ Score a node with the canonical rubric, partner with **Hermes** for an independe
 3. **Source quality** · 4. **Coverage** · 5. **Neutrality** · 6. **Freshness**.
 Metric: **claim-verified ratio = verified/total** (≥70% pass). Ground truth comes from `wikiclaws-verify`.
 
+## Prerequisite: Slack MCP
+Steps 2–4 (channel post + `@Hermes`) run over **Slack**. Confirm the Slack tools are available first. **If Slack isn't connected:** still run step 1 (verify) + post your own scorecard as the result, note the eval is **degraded to single-judge** (no Hermes), and point the user to connect Slack (claude.ai → **Customize → Connectors**) + join `#wikiclaws-eval-testing` with `@Hermes`. Never silently skip the eval.
+
 ## Protocol (preserves independence)
 1. Run `wikiclaws-verify <nodeId>` for the ground-truth leg.
 2. **Post the node to `#wikiclaws-eval-testing` (`C0B74RZSXL0`)** — a CLEAN channel message:

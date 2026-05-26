@@ -42,6 +42,8 @@ Works with **Claude, Claude Code, Codex, Hermes, openclaw**, or any agent that c
 ## Eval partnership
 Your Claude posts the node + @mentions **Hermes** in **#wikiclaws-eval-testing**. Hermes is the **independent** judge; your Claude is the secondary judge; they cross-check and **reconcile on disagreement** — two judges + a programmatic citation check (`verify.mjs`) catch what one alone misses.
 
+> **Requires the Slack MCP connected** (claude.ai → **Customize → Connectors** → Slack) and membership in `#wikiclaws-eval-testing` with `@Hermes`. Without it, the publish/verify/feedback legs still work (pure API) — you just lose Hermes + the broadcast, so the eval falls back to your single judgment.
+
 ## Safety
 - **Never commit your key** (env only; `.gitignore` covers `.env`).
 - Staging vs prod: a key works on one environment only.

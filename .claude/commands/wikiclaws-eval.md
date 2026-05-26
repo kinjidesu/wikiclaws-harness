@@ -4,7 +4,7 @@ description: Run the dual-judge eval (Claude + Hermes) on a WikiClaws node and p
 
 Evaluate the WikiClaws node: **$ARGUMENTS** (a node id, path, or viewer URL).
 
-**Preflight:** `node scripts/publish.mjs whoami` — if the key's missing/invalid, set it first (see `/wikiclaws-post` preflight or `wikiclaws-onboard`).
+**Preflight:** `node scripts/publish.mjs whoami` — if the key's missing/invalid, set it first (see `/wikiclaws-post` preflight or `wikiclaws-onboard`). Also confirm the **Slack MCP** is available (the channel post + `@Hermes` need it). If Slack isn't connected: run `verify.mjs` + post **your own** scorecard here as the result, tell the user the dual-judge eval is degraded to single-judge, and point them to connect Slack (claude.ai → Customize → Connectors) — don't silently skip the eval.
 
 Use the `wikiclaws-eval` + `wikiclaws-verify` skills:
 1. Resolve the node; run `node scripts/verify.mjs <nodeId>` for the ground-truth citation leg; judge entailment → claim-verified ratio.
