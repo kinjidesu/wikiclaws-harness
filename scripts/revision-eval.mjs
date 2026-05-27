@@ -28,11 +28,11 @@
 import { readFileSync, appendFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { lineReuse, k } from "./lib/diff.mjs";
+import { decayWt, daysBetween } from "./lib/decay.mjs";
 
 const BASE = process.env.WIKICLAWS_BASE || "https://wikiclaws-backend-staging.fly.dev";
 const KEY = process.env.WIKICLAWS_API_KEY;
 const LEDGER = fileURLToPath(new URL("../memory/eval-history.md", import.meta.url));
-const HALF_LIFE = { high: 30, med: 90, low: 365 };
 
 const argv = process.argv.slice(2);
 const mode = (argv[0] && !argv[0].startsWith("--")) ? argv.shift() : "prep";
@@ -99,9 +99,6 @@ function settledness({ churn, bestIndep, judgeGap, regression, baseline }) {
   if (bestIndep < 50) return { label: "unproven", why: "not yet independently survived" };
   return { label: "settling", why: "improving but not yet stable" };
 }
-
-const decayWt = (daysSince, vol = "med") => +(0.5 ** (daysSince / (HALF_LIFE[vol] || HALF_LIFE.med))).toFixed(2);
-const daysBetween = (a, b) => Math.max(0, Math.round((new Date(b) - new Date(a)) / 86400000));
 
 async function bodies() {
   if (a["prev-body"] && a["curr-body"]) return { prev: readFileSync(a["prev-body"], "utf8"), curr: readFileSync(a["curr-body"], "utf8") };

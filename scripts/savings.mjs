@@ -38,6 +38,7 @@ const tokensSaved = tok(reusedChars);
 console.log(`\n♻️  Token savings (reuse vs re-derive) — ${action}${a.node ? ` · node ${a.node}` : ""}`);
 console.log(`   reused ${k(reusedChars)} chars (~${k(tokensSaved)} output tokens) · new ${k(newChars)} chars (~${k(tok(newChars))} tok)`);
 console.log(`   savings: ${pct}% of the published node reused → ~${k(tokensSaved)} tokens NOT re-derived.`);
+console.log(`   = a semantic-CACHE HIT (dedup-check was the cache lookup; this reused an existing node instead of re-deriving — the published 40–80% caching literature is the macro version of this).`);
 console.log(`   Slack line:  ♻️ reused ~${k(tokensSaved)} tok (${pct}%) — ${action}${a.node ? ` ${a.node}` : ""}`);
 console.log(`   (Conservative: counts reused OUTPUT only; research/input savings are extra. Estimate, ~4 chars/token.)`);
 

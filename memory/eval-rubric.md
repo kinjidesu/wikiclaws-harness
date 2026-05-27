@@ -12,9 +12,11 @@
 
 **Canonical metric:** claim-verified ratio = supported claims / total (≥90% A+, 80–89% A, 70–79% B, <70% FAIL). A claim is "supported" if its citation is live + actually supports it + reputable. Unreachable source = **"unverifiable"**, never "verified".
 
+**SAFE-style precision (adopt — grounded in SAFE, DeepMind/Stanford NeurIPS'24):** decompose the body into **atomic claims**, verify each against its cited source (`verify.mjs --claims claims.json`), label `supported|contradicted|unsupported|irrelevant`, and report **precision = supported/(supported+contradicted+unsupported)** + `claims_checked`. This catches "the source doesn't actually say that" (unsupported) — which eyeballing and bare reachability miss.
+
 ## Structured output (both judges post this so agreement is computable)
 ```json
-{"judge":"hermes|claude","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","top_fix":"…"}
+{"judge":"hermes|claude","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","precision":_._,"claims_checked":_,"self_authored":true|false,"top_fix":"…"}
 ```
 Weights (overall): citation 25 / truth 25 / source 15 / coverage 15 / neutrality 10 / freshness 10.
 

@@ -7,11 +7,20 @@ description: Rigorously verify a node's citations — the ground-truth leg of th
 
 Two holistic judges (you + Hermes) can BOTH be wrong — so verify against the actual sources.
 
-## Run it
+## Run it — two modes
 ```bash
-node scripts/verify.mjs <nodeId>
+node scripts/verify.mjs <nodeId>                       # reachability: is each citation live?
+node scripts/verify.mjs <nodeId> --claims claims.json  # SAFE-style: per-atomic-claim scaffold
 ```
-This fetches every URL in `metadata.citations[]` (Wayback fallback on 403), and prints reachable/unreachable + a text snippet per source.
+Reachability mode fetches every URL in `metadata.citations[]` (Wayback fallback on 403) and prints reachable/unreachable + a snippet.
+
+## SAFE-style atomic-claim verification (the rigorous path — adopt this)
+Grounded in **SAFE** (Search-Augmented Factuality Evaluator, DeepMind/Stanford, NeurIPS'24): don't eyeball "is the node true" — **decompose the body into ATOMIC CLAIMS**, verify each against its cited source, and score precision.
+1. Extract atomic claims into `claims.json`: `[{"claim":"<one factual claim>","cites":[1,3]}, …]` (1-based `[[n]]` indices). One verifiable assertion per claim.
+2. `node scripts/verify.mjs <nodeId> --claims claims.json` → for each claim it fetches the cited source(s) and prints the **excerpt around the claim's keywords** so you can judge entailment.
+3. Label each claim: **supported** | **contradicted** (GATE FAIL — flag loudly) | **unsupported** (source doesn't actually say it) | **irrelevant** (source off-point).
+4. **Precision = supported / (supported + contradicted + unsupported)** — report it alongside the claim-verified ratio. (SAFE-style; a claim whose keywords aren't even in the source is NOT "supported".)
+On the web sandbox `verify.mjs` may reach ~0 — re-fetch via the TOOL path (below) and judge from that.
 
 ## ⚠️ Claude Code web: use the TOOL fetch path, not the container fetch
 There are **two network paths** and they don't behave the same:
@@ -35,7 +44,7 @@ For each load-bearing claim:
 - Future-dated/current-events content: judge against the **cited source**, not your training cutoff.
 
 ## Output
-- **claim-verified ratio = supported / total** (≥70% to pass; <60% or any contradiction → revise to v2 before/at eval).
+- **claim-verified ratio = supported / total** (≥70% to pass; <60% or any contradiction → revise to v2 before/at eval) **+ SAFE precision = supported/(supported+contradicted+unsupported)**.
 - A short list of flagged/weak claims with the fix.
 
 Feed this into `wikiclaws-eval` as the ground-truth third leg alongside the Hermes + Claude holistic scores.

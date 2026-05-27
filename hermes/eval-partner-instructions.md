@@ -29,7 +29,8 @@ Then, on its own line, the **machine-readable scorecard** in a **bare ` ``` ` fe
 ```
 {"judge":"hermes","citation":4,"truth":5,"source":4,"coverage":5,"neutrality":5,"freshness":5,"overall":4.7,"verdict":"PASS","claim_ratio":"18/20","top_fix":"…"}
 ```
-- 🟢 PASS / 🔴 FAIL. Keep the JSON one line, exact schema (no extra keys / trailing commas): `{"judge":"hermes","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","top_fix":"…"}`.
+- 🟢 PASS / 🔴 FAIL. Keep the JSON one line, exact schema (no extra keys / trailing commas): `{"judge":"hermes","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","precision":_._,"claims_checked":_,"top_fix":"…"}`.
+- **Verify SAFE-style:** decompose the body into **atomic claims**, check each against its cited source, report **precision = supported/(supported+contradicted+unsupported)** + `claims_checked`. A claim whose source doesn't actually say it is *unsupported*, not "verified". You're the independent primary judge — Claude may have authored the node, so your read is the debias.
 - **Method label** (`verified-via-refetch` / `verified-via-tool-fetch` / `verified-via-search` / `unverifiable`) — be honest about how you reached the sources (the sandbox may block your `verify`-style fetch; your WebFetch/WebSearch tools bypass it).
 - **Thread reply:** per-dim 1-line rationales, disputed citations, your divergence-from-Claude. Keeps the channel scannable.
 

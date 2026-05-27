@@ -17,7 +17,7 @@ Metric: **claim-verified ratio = verified/total** (≥70% pass). Ground truth co
 Steps 2–4 (channel post + `@Hermes`) run over **Slack**. Confirm the Slack tools are available first. **If Slack isn't connected:** still run step 1 (verify) + post your own scorecard as the result, note the eval is **degraded to single-judge** (no Hermes), and point the user to connect Slack (claude.ai → **Customize → Connectors**) + join `#wikiclaws-eval-testing` with `@Hermes`. Never silently skip the eval.
 
 ## Protocol (preserves independence)
-1. Run `wikiclaws-verify <nodeId>` for the ground-truth leg.
+1. Run `wikiclaws-verify <nodeId>` for the ground-truth leg — then **decompose the body into atomic claims and re-run `verify.mjs <nodeId> --claims claims.json` (SAFE-style)** to get per-claim **precision = supported/(supported+contradicted+unsupported)**, not just reachability.
 2. **Post the node to `#wikiclaws-eval-testing` (`C0B74RZSXL0`)** — a CLEAN channel message:
    - node **viewer link** + 3–5 bullets: per-dim scores, overall + PASS/FAIL, **claim-verified ratio**, one-line top-fix, NEW vs CONTRIBUTED.
    - **Self-identify** ("posted by <agent>/<namespace>") — all Claude posts share one app identity.
@@ -27,8 +27,15 @@ Steps 2–4 (channel post + `@Hermes`) run over **Slack**. Confirm the Slack too
 
 ## Your scorecard format (match Hermes's so agreement is computable)
 ```json
-{"judge":"claude","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","top_fix":"…"}
+{"judge":"claude","citation":_,"truth":_,"source":_,"coverage":_,"neutrality":_,"freshness":_,"overall":_._,"verdict":"PASS|FAIL","claim_ratio":"M/N","precision":_._,"claims_checked":_,"self_authored":true|false,"top_fix":"…"}
 ```
+
+## Judge bias — mitigations (this eval is only as good as its independence)
+The literature on LLM-as-judge (position bias, **self-preference bias** — judges over-score their *own* outputs; arXiv 2406.07791 / 2506.02592) bites us directly: your subagents often *authored* the node you're now scoring.
+- **`self_authored`:** set it true when you/your subagent wrote (or last revised) this node. When true: **state the self-preference caution explicitly, lean on Hermes as the primary**, and don't let a high self-score override a verify/precision miss.
+- **Hermes is the independent primary** (different model family — the single best debias). **Hermes-first-blind** (it never sees your numbers) defuses both position bias and anchoring — keep it.
+- **Log the self-preference delta:** on self-authored nodes, record `Claude_overall − Hermes_overall` to calibration; a persistent positive gap = measured self-preference → correct for it.
+- **Optional 3rd judge** (panel-of-judges / PoLL) from a *different* family for high-stakes or contested (judge-divergent) nodes — adds variance + breaks ties.
 
 ## Channel post format (concise — keep the channel scannable)
 Default = **markdown** (the claude.ai Slack connector is markdown-only; no Block Kit). Post this tight template in-channel; depth goes in the thread:
@@ -52,9 +59,9 @@ A vN where v(N-1) was already evaluated is NOT re-scored from scratch — eval t
 2. Re-verify only the delta (`verify.mjs`/WebFetch); re-score only touched dims (untouched inherit); confirm the prior `top_fix` was addressed. **Hermes blind to prior numbers** — give it the changed text + prior top-fix as a task.
 3. **Regression guard (flag-only):** dim Δ<0 / claim-ratio drop / a claim now contradicted or rotted → loud `🔴 REGRESSION` + log; never auto-act.
 4. `node scripts/revision-eval.mjs record --node <id> --version N --by <agent> --scores scores.json --survival <pct> [--prior-agent <a>] [--judge-gap <|H-C|>]` → logs **independent-survival / Beta trust mean±ci / settledness / decay** to `memory/eval-history.md` and prints the Slack delta line.
-5. **Channel (concise):** `🟢 *<Title>* — *PASS 4.9/5* (▲ +0.2 vs v2) · REVISION v3 · by <ns>` / scores+claims+`trust X.X ± Y` / **URL on its own line** / `♻️ <s>% survival (<i>% independent) · re-verified k/N · settledness: … · 🧵 trajectory`. **Thread:** v1→vN trajectory table, citation-diff (+method labels), claim-maturity, both scorecards. Major rewrite (survival < ~35%) → full eval, not diff.
+5. **Channel (concise):** `🟢 *<Title>* — *PASS 4.9/5* (▲ +0.2 vs v2) · REVISION v3 · by <ns>` / scores+claims+`trust X.X ± Y` / **bounded `[label](url)` link** / `♻️ <s>% survival (<i>% independent) · re-verified k/N · settledness: … · 🧵 trajectory`. **Thread:** v1→vN trajectory table, citation-diff (+method labels), claim-maturity, both scorecards. Major rewrite (survival < ~35%) → full eval, not diff.
 
 ## Calibration
-Log the agreement (per-dim deltas + overall) to `memory/` over time. If you and Hermes systematically diverge on a dimension, that's a signal to refine the rubric (and re-send Hermes its standing instructions).
+Log the agreement (per-dim deltas + overall) to `memory/eval-rubric.md` over time — **including the self-preference delta** (Claude−Hermes on `self_authored` nodes). If you and Hermes systematically diverge on a dimension, or the self-preference gap is persistently positive, that's a signal to refine the rubric / correct your scores (and re-send Hermes its standing instructions).
 
 If a node scores low / has a contradiction → loop back to `wikiclaws-publish revise` (v2) and re-eval.

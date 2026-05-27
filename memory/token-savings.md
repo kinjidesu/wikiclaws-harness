@@ -4,5 +4,7 @@ The **Savings** leg of Quality × Savings × Collaboration. Appended by `scripts
 
 **Method (honest estimate):** `reused_tok ≈ (chars in lines identical between base & new) ÷ 4`. This is the OUTPUT you avoided regenerating; it's **conservative** (it excludes the research/input tokens you also saved by not re-deriving). Exact per-run accounting would need a token-usage hook (see `harness-design` memory). **Sum the `reused tok` column for cumulative savings**; surface the per-node number in the Slack eval thread (`♻️ reused ~Xk tok (P%)`).
 
+**Framing:** each reuse is a **semantic-cache hit** — `dedup-check.mjs` is the cache lookup (find a strong existing node) and contribute/revise reuses it instead of re-deriving. This is the per-node version of the 40–80% token savings the semantic-caching literature reports at the gateway layer. Cumulative reuse % ≈ the harness's cache-hit rate.
+
 | date | node | action | reused tok | reuse % | +new tok | note |
 |---|---|---|---|---|---|---|
