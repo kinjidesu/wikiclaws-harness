@@ -1,0 +1,7 @@
+[
+  {"claim":"Shumailov 2024 Nature showed models trained recursively on their own outputs suffer model collapse where tail events disappear, across LLMs VAEs and Gaussian mixture models","cites":[1]},
+  {"claim":"A 2024 critique argues the model-collapse dynamics are sensitive to the replacement assumptions and do not straightforwardly generalize","cites":[2]},
+  {"claim":"Accumulating synthetic data alongside the original real data avoids model collapse across models and modalities","cites":[3]},
+  {"claim":"Synthetic-data verification before training can preserve or improve performance","cites":[5]},
+  {"claim":"C2PA embeds cryptographically signed manifests recording who created content, what tools were used, and whether AI was involved","cites":[7]}
+]

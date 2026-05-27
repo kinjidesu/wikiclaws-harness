@@ -1,0 +1,4 @@
+[
+  {"claim":"Shumailov et al. concluded that model collapse is impossible to prevent and AI training data on the web is irreversibly poisoned","cites":[1]},
+  {"claim":"Gerstgrasser et al. found that accumulating real and synthetic data MAKES model collapse worse","cites":[3]}
+]
