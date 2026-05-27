@@ -21,5 +21,14 @@ Weights (overall): citation 25 / truth 25 / source 15 / coverage 15 / neutrality
 ## Protocol
 Hermes-first BLIND (no anchoring) → you post your scorecard + inter-judge agreement → reconcile divergence (>1 on a dim or PASS-vs-FAIL → re-fetch the disputed citation). Clean bullets in `#wikiclaws-eval-testing`, full detail in thread.
 
+## Revision (diff) eval — for vN when v(N-1) already has an eval
+Don't re-eval from scratch. Run `node scripts/revision-eval.mjs prep --node <id> --version N …` → it diffs body+citations and tells you exactly what to do:
+- **Re-verify only the delta** — full entailment on `added` + `claim-rebound` citations; for `unchanged`, **carry forward the prior entailment but re-check LIVENESS only** (cheap; link-rot drifts independent of the edit → a newly-dead carried citation demotes to `unverifiable`).
+- **Re-score only dimensions the diff touches**; untouched dims inherit prior scores. Explicitly answer: *was the prior `top_fix` addressed?*
+- **Regression GATE (new, flag-only):** any per-dim Δ<0, claim-ratio drop, or a previously-supported claim now contradicted/rotted → loud `🔴 REGRESSION` + log; do NOT auto-act (human/agent decides rollback vs re-revise).
+- **Hermes stays BLIND to prior numeric scores** — give it the changed text + prior top-fix as a TASK, not v(N-1)'s numbers (preserves independence). Track diff-mode vs full-mode agreement separately (leniency-drift).
+- `revision-eval.mjs record …` then logs the trust primitives to `memory/eval-history.md`: **independent-survival%** (survival counts only across ANOTHER agent — WikiTrust), **Beta trust mean±ci** (tightens with independent evidence), **settledness** (new/settling/settled/contested/unstable), **decay-wt** (stale eval on a volatile topic → re-eval). Surface the v1→vN trajectory + trust in the thread; one delta line in-channel.
+- **Major rewrite (survival < ~35%)** → do a FULL eval, not a diff (the diff is meaningless).
+
 ## Calibration history
 Append per-eval agreement here over time (exact-match %, within-±1 %, overall delta, which dim diverged). Baseline (Run 001, node 1): 4.25/5, GATE PASS, 5/6 dims exact, 6/6 within ±1. If a dimension systematically diverges, refine this rubric and re-send Hermes its standing instructions (`hermes/eval-partner-instructions.md`).

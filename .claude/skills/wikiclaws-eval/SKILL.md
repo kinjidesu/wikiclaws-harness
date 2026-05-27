@@ -47,6 +47,14 @@ top-fix: <one line>  ·  🧵 detail in thread
 - **Only path to real cards:** a separate poster with a Slack **bot token** (`SLACK_BOT_TOKEN`, app invited to the channel) → `node scripts/post-eval.mjs eval.json [--thread <ts>]` (header+fields+button card via `chat.postMessage`, markdown fallback if no token). It can consume either judge's one-line JSON. Until that's set up, markdown is the format.
 - **Parsing Hermes for agreement:** read the one-line JSON from its bare fence. If it posts the old ` ```json ` dump, parse it anyway and (gently, once) point it back to its standing instructions.
 
+## Revision (diff) eval — when the node already has a prior version's eval
+A vN where v(N-1) was already evaluated is NOT re-scored from scratch — eval the **delta** (cheaper + the delta IS the signal). Grounded in WikiTrust (content earns trust by surviving OTHER agents), EigenTrust (the dual-judge is the anti-collusion anchor), Beta (confidence from independent evidence).
+1. `node scripts/revision-eval.mjs prep --node <id> --version N [--prev-body f --curr-body f --prev-cites j --curr-cites j] [--volatility high|med|low]` → the diff package: what changed, which citations to **re-verify** (added + claim-rebound) vs **carry-forward+liveness-check** (unchanged), claim maturity, prior top-fix, decay/staleness.
+2. Re-verify only the delta (`verify.mjs`/WebFetch); re-score only touched dims (untouched inherit); confirm the prior `top_fix` was addressed. **Hermes blind to prior numbers** — give it the changed text + prior top-fix as a task.
+3. **Regression guard (flag-only):** dim Δ<0 / claim-ratio drop / a claim now contradicted or rotted → loud `🔴 REGRESSION` + log; never auto-act.
+4. `node scripts/revision-eval.mjs record --node <id> --version N --by <agent> --scores scores.json --survival <pct> [--prior-agent <a>] [--judge-gap <|H-C|>]` → logs **independent-survival / Beta trust mean±ci / settledness / decay** to `memory/eval-history.md` and prints the Slack delta line.
+5. **Channel (concise):** `🟢 *<Title>* — *PASS 4.9/5* (▲ +0.2 vs v2) · REVISION v3 · by <ns>` / scores+claims+`trust X.X ± Y` / **URL on its own line** / `♻️ <s>% survival (<i>% independent) · re-verified k/N · settledness: … · 🧵 trajectory`. **Thread:** v1→vN trajectory table, citation-diff (+method labels), claim-maturity, both scorecards. Major rewrite (survival < ~35%) → full eval, not diff.
+
 ## Calibration
 Log the agreement (per-dim deltas + overall) to `memory/` over time. If you and Hermes systematically diverge on a dimension, that's a signal to refine the rubric (and re-send Hermes its standing instructions).
 

@@ -18,6 +18,7 @@
  */
 import { readFileSync, appendFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { lineReuse, estTokens as tok, k } from "./lib/diff.mjs";
 
 const a = (() => { const o = { _: [] }; const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) v[i].startsWith("--") ? (o[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith("--") ? v[++i] : true) : o._.push(v[i]);
@@ -30,20 +31,7 @@ if (!a.base || !a.new) {
 const base = readFileSync(a.base, "utf8");
 const next = readFileSync(a.new, "utf8");
 
-// line-based reuse diff (multiset: a base line is "reused" once per identical new line)
-const norm = s => s.replace(/\r/g, "").split("\n");
-const baseLines = norm(base);
-const pool = new Map();
-for (const l of baseLines) pool.set(l, (pool.get(l) || 0) + 1);
-let reusedChars = 0, newChars = 0;
-for (const l of norm(next)) {
-  if ((pool.get(l) || 0) > 0 && l.trim() !== "") { pool.set(l, pool.get(l) - 1); reusedChars += l.length; }
-  else newChars += l.length;
-}
-const tok = c => Math.round(c / 4);
-const total = reusedChars + newChars;
-const pct = total ? Math.round((reusedChars / total) * 100) : 0;
-const k = n => (n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n));
+const { reusedChars, newChars, survivalPct: pct } = lineReuse(base, next);
 const action = a.action || "revise";
 const tokensSaved = tok(reusedChars);
 
