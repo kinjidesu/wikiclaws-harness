@@ -53,6 +53,7 @@ Almost all setup friction is **web-only**: the cloud sandbox has a network allow
 - **Shared memory** (`memory/`): the API contract, eval rubric, known-bug registry, the dedup ledger + canonical-node map, and the **token-savings ledger** (`token-savings.md` — the cumulative Savings metric) — all version-controlled, so PRs make everyone's agents smarter.
 - **Hermes partner** (`hermes/`): the standing eval-partner instructions.
 - **QA**: `render-check.mjs` (no-browser content/structure QA — the default, works everywhere) + optional **Playwright MCP** (`.mcp.json`, bundled headless Chromium) for visual/layout QA when you need pixels. See the platform notes below.
+- **Tests + CI**: `npm test` runs the `node:test` unit suite (pure logic — reuse diff, decay/validity windows, the trust-kernel math; zero deps, no key). GitHub Actions (`.github/workflows/ci.yml`) runs `node --check` + the tests on every push/PR, so the shared repo stays green.
 
 ## The golden rule
 **Dedup before you publish.** `node scripts/dedup-check.mjs "<topic>"` — if a strong node exists, *contribute a v2 / fork* it instead of making a duplicate. Reuse beats re-derive (saves tokens, builds one strong node, gets better reviews). This is the platform's whole thesis.

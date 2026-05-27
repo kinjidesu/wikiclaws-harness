@@ -29,6 +29,7 @@ import { readFileSync, appendFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { lineReuse, k } from "./lib/diff.mjs";
 import { decayWt, daysBetween } from "./lib/decay.mjs";
+import { normUrl, classifyCitations, betaTrust, settledness } from "./lib/trust.mjs";
 
 const BASE = process.env.WIKICLAWS_BASE || "https://wikiclaws-backend-staging.fly.dev";
 const KEY = process.env.WIKICLAWS_API_KEY;
@@ -40,32 +41,12 @@ const a = (() => { const o = { _: [] }; for (let i = 0; i < argv.length; i++) ar
 
 // ---------- helpers ----------
 const readJSON = f => JSON.parse(readFileSync(f, "utf8"));
-const normUrl = u => String(u || "").trim().toLowerCase()
-  .replace(/[#?].*$/, "").replace(/\/+$/, "").replace(/^https?:\/\//, "").replace(/^www\./, "");
 
 async function api(path) {
   if (!KEY) throw new Error("set WIKICLAWS_API_KEY (or use local --prev-body/--curr-body)");
   const r = await fetch(BASE + path, { headers: { "X-API-Key": KEY } });
   if (!r.ok) throw new Error(`API ${r.status} ${path}`);
   return r.json();
-}
-
-// classify citations between prior and current by normalized URL.
-// claim-rebound = URL unchanged but its [[n]] marker moved onto a CHANGED line → claim changed → re-verify.
-function classifyCitations(prev, curr, changedText) {
-  const prevByUrl = new Map(prev.map(c => [normUrl(c.url), c]));
-  const currByUrl = new Map(curr.map(c => [normUrl(c.url), c]));
-  const added = [], removed = [], unchanged = [], rebound = [];
-  curr.forEach((c, i) => {
-    const u = normUrl(c.url);
-    if (!prevByUrl.has(u)) { added.push(c); return; }
-    // marker index = position+1; if a changed line bears [[idx]], the claim moved
-    const idx = i + 1;
-    if (new RegExp(`\\[\\[${idx}\\]\\]`).test(changedText)) rebound.push(c);
-    else unchanged.push(c);
-  });
-  for (const c of prev) if (!currByUrl.has(normUrl(c.url))) removed.push(c);
-  return { added, removed, unchanged, rebound };
 }
 
 // parse prior lineage rows for this node from the markdown ledger
@@ -78,26 +59,6 @@ function loadLineage(node) {
     return { date: c[1], node: c[2], version: +c[3], by: c[4], overall: parseFloat(c[5]),
       survival: c[8], indep: c[9], verdict: c[14], regression: /yes|🔴/i.test(c[15] || ""), judges: c[16] };
   }).filter(r => r.node === node);
-}
-
-// Beta-style trust: mean overall + a confidence ± that tightens with independent evidence.
-function betaTrust(overalls, nIndep) {
-  const n = overalls.length;
-  const mean = n ? overalls.reduce((x, y) => x + y, 0) / n : 0;
-  const effective = n + nIndep;                 // independents count double
-  const ci = effective ? 0.8 / Math.sqrt(effective) : 0.8;
-  return { mean: +mean.toFixed(2), ci: +ci.toFixed(2), n, nIndep };
-}
-
-// settledness uses CUMULATIVE independent validation (bestIndep across the lineage), not just the
-// latest edit's independence — a self-revise shouldn't flip a previously-validated node to contested.
-function settledness({ churn, bestIndep, judgeGap, regression, baseline }) {
-  if (baseline) return { label: "new", why: "baseline — not yet independently validated" };
-  if (regression) return { label: "unstable", why: "regressed this revision" };
-  if (judgeGap > 1.0 || churn >= 6) return { label: "contested", why: judgeGap > 1.0 ? "judges persistently diverge" : "high revision churn" };
-  if (bestIndep >= 70 && judgeGap <= 0.5) return { label: "settled", why: "survived another agent + judges agree" };
-  if (bestIndep < 50) return { label: "unproven", why: "not yet independently survived" };
-  return { label: "settling", why: "improving but not yet stable" };
 }
 
 async function bodies() {
