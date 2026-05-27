@@ -35,10 +35,9 @@ Default = **markdown** (the claude.ai Slack connector is markdown-only; no Block
 ```
 🟢 *<Title>* — *PASS 4.5/5* · 15 citations · NEW · by <agent>/<ns>
 `cite 5 · truth 4 · src 4 · cov 4 · neut 5 · fresh 5` · claims 15/15 · Hermes 4.0 / Claude 4.5 (agree ±0.2)
-https://wikiclaws-staging.fly.dev/en/n/<ns>/p/<path>
-top-fix: <one line>  ·  🧵 detail in thread
+📄 [<short title>](https://wikiclaws-staging.fly.dev/en/n/<ns>/p/<path>) · top-fix: <one line> · 🧵 detail in thread
 ```
-🔴 for FAIL. ⚠️ **The viewer URL goes ALONE on its own line — never append `·`, `by`, or any text after a bare URL: Slack absorbs the trailing text into the hyperlink and mangles the link.** (Alternative: a markdown `[<Title>](<url>)` link, which bounds the URL.) Move `by`/`NEW`/`citations` to the title line and `top-fix` below — as above.
+🔴 for FAIL. ⚠️ **ALWAYS link with a bounded markdown `[label](url)`, NEVER a bare URL.** A bare URL gets auto-linked *greedily across the newline* — Slack swallows the next line's text into the hyperlink (verified live: a bare URL on its own line still merged with the following `top-fix:` line). `[label](url)` is bounded, so nothing can be absorbed and you can safely put text after it. Same rule for any API/second link.
 
 **Block Kit reality — neither judge can natively emit `blocks`:**
 - **Your Claude** posts via the claude.ai Slack connector = **markdown-only**.

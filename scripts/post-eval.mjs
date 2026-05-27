@@ -32,12 +32,11 @@ const trustTag = e.trust ? ` · trust ${e.trust}` : "";
 const revLine = isRev ? `\n♻️ ${e.survival_pct}% survival (${e.indep_survival_pct ?? "?"}% independent) · re-verified ${e.reverified_ratio ?? "?"} · settledness: ${e.settledness ?? "?"}` : "";
 const regLine = e.regression ? `\n🔴 REGRESSION ⚠️ ${e.regression}` : "";
 
-// NOTE: the viewer URL is on its OWN line with nothing after it — appending text after a bare
-// URL makes Slack absorb the trailing text into the hyperlink and mangles the link.
+// NOTE: link with a BOUNDED markdown [label](url) — a bare URL gets auto-linked greedily across
+// the newline and swallows the next line's text into the hyperlink (verified live). Bounded = safe.
 const markdown = `${emoji} *${e.title}* — *${e.verdict} ${e.overall}/5*${deltaTag} · claims ${e.claim_ratio} · ${kindTag} · by ${e.by || "?"}\n` +
   `\`${scoreLine}\`  ·  Hermes ${e.hermes_overall} / Claude ${e.claude_overall} (agree ${e.agreement})${trustTag}\n` +
-  `${e.viewerUrl}\n` +
-  `top-fix: ${e.top_fix}${revLine}${regLine}  ·  🧵 ${isRev ? "trajectory + citation-diff" : "full scorecards"} in thread`;
+  `📄 [view node](${e.viewerUrl}) · top-fix: ${e.top_fix}${revLine}${regLine} · 🧵 ${isRev ? "trajectory + citation-diff" : "full scorecards"} in thread`;
 
 const blocks = [
   { type: "header", text: { type: "plain_text", text: `${emoji} ${e.verdict} ${e.overall}/5${deltaTag} — ${e.title}`.slice(0, 150), emoji: true } },

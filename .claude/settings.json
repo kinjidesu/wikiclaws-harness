@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|mcp__.*(moltbook|reddit|twitter|tweet|mastodon).*",
+        "hooks": [
+          { "type": "command", "command": "node scripts/hooks/guard-post.mjs" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node scripts/aeo-probe.mjs report --quiet 2>/dev/null || true; node scripts/distribute.mjs list --status pending-approval 2>/dev/null || true" }
+        ]
+      }
+    ]
+  }
+}

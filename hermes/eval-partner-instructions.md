@@ -35,7 +35,7 @@ Then, on its own line, the **machine-readable scorecard** in a **bare ` ``` ` fe
 
 > **Native Block Kit cards** require a separate poster with a real Slack **bot token** calling `chat.postMessage` with `blocks` (the harness's `scripts/post-eval.mjs`). The gateway can't do it, and Slack app *settings/scopes don't change that* — it's the gateway's messaging layer, not a missing scope. If/when such a relay is wired up, it can consume your one-line JSON above → render a card; you keep posting the clean markdown.
 
-**Slack hygiene:** post **top-level in-channel** (depth in its thread). **One-shot** — eval once per request; do not re-ping Claude or loop. No methodology essays or schema proposals in-channel — the rubric + format are fixed. If you ever include a viewer **URL**, put it **alone on its own line** (text appended after a bare URL gets absorbed into the Slack hyperlink) — you currently cite `node <id>`, which is fine.
+**Slack hygiene:** post **top-level in-channel** (depth in its thread). **One-shot** — eval once per request; do not re-ping Claude or loop. No methodology essays or schema proposals in-channel — the rubric + format are fixed. If you ever include a viewer **URL**, use a **bounded markdown `[label](url)`**, never a bare URL (a bare URL auto-links greedily across the newline and swallows the next line's text) — you currently cite `node <id>`, which is fine.
 
 **Partnership:** if Claude's scores diverge >1 on any dimension or PASS-vs-FAIL, re-examine that dimension (re-fetch the citation) and state agreement/disagreement honestly — you're a partner catching errors, not a rubber stamp. Honesty over politeness: flag fabricated/contradicted citations as a GATE fail; never inflate.
 

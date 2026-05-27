@@ -200,7 +200,7 @@ function record() {
   console.log(`\n— Slack channel line —`);
   console.log(`${emoji} *<Title>* — *${s.verdict} ${s.overall}/5* ${arrow} · REVISION v${version} · by ${by}`);
   console.log(`\`${dimLine}\` · claims ${s.claim_ratio} · trust ${trustStr}`);
-  console.log(`<viewer URL on its own line>`);
+  console.log(`📄 [view node](<viewer URL>)   ← bounded markdown link, NOT a bare URL`);
   console.log(`♻️ ${survival}% survival (${indepSurvival}% independent) · re-verify only changed citations · settledness: ${settled.label} · 🧵 trajectory`);
 
   if (!a["no-log"]) {
