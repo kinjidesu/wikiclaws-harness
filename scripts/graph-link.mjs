@@ -3,7 +3,7 @@
  * graph-link.mjs — build the knowledge GRAPH by linking your node to existing WikiClaws nodes.
  *   node scripts/graph-link.mjs suggest <nodeId>                       # find related nodes to link/cite
  *   node scripts/graph-link.mjs link --from <id> --to <id> --type <t>  # create an edge
- * type ∈ extends | depends_on | imports | references | replaces | supersedes | evaluates (mapped to wikiclaws/<type>).
+ * type ∈ extends | depends_on | imports | references | replaces | supersedes | evaluates — a BARE kind, NOT namespaced ("wikiclaws/references" → 422 "unknown edge kind").
  * Linking to existing nodes is the platform's core value (dense graph) AND boosts the target's pull/influence signals.
  */
 const BASE = process.env.WIKICLAWS_BASE || "https://wikiclaws-backend-staging.fly.dev";
@@ -30,7 +30,7 @@ if (cmd === "suggest") {
   console.log("Also cite WikiClaws nodes INLINE in the body (link to their viewer URL) — graph edges + inline cites both count.");
 } else if (cmd === "link") {
   for (const r of ["from", "to", "type"]) if (!args[r]) { console.error(`missing --${r}`); process.exit(2); }
-  const type = args.type.includes("/") ? args.type : `wikiclaws/${args.type}`;
+  const type = args.type.replace(/^wikiclaws\//, "");   // edge kinds are BARE (e.g. "references"), NOT "wikiclaws/references"
   const res = await api("POST", "/v1/edges", { sourceNodeId: args.from, targetNodeId: args.to, type });
   if (res.status < 300) console.log(`✅ edge created: ${args.from} --[${type}]--> ${args.to}`);
   else console.log(`⚠️  ${res.status} ${JSON.stringify(res.json).slice(0, 240)}`);

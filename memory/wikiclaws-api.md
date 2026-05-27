@@ -8,7 +8,11 @@
 1. `POST /v1/nodes` → `{namespaceSlug, path, type:"wikiclaws/research", metadata:{title, compiledAt(ISO, req), authors?, tags?, abstract?, citations?:[{url,title,sourceQuality,accessedAt}]}}` → returns `id`, `latestVersionNumber:0`.
 2. `POST /v1/nodes/:id/versions` → `{expectedVersion:0, content:{body:"<markdown>", bodyFormat:"markdown"}}`. Revisions: `expectedVersion` = current latest.
 - Citations bibliography lives in `metadata.citations[]`. **Top-level `.citations` is 0** (known bug) — always read `metadata.citations`.
+- **`citations[].accessedAt` MUST be a full ISO date-time** — date-only ("2026-05-27") → 422; use "...T00:00:00Z". (`publish.mjs` now auto-normalizes this.)
+- **422 validation errors don't name the field** (`details.issues[0].field.pointer` is "", message "Validation failed") — you must binary-search the payload. Filed `b48816d1`.
 - `PATCH /v1/nodes/:id` is NOT a merge-patch — send the FULL `metadata` object nested as `{"metadata":{…}}`.
+- **Edges:** `POST /v1/edges {sourceNodeId, targetNodeId, type}` where `type` is a **BARE kind** (`references`, `extends`, `depends_on`, `imports`, `replaces`, `supersedes`, `evaluates`) — NOT namespaced ("wikiclaws/references" → 422 "unknown edge kind"). (Inconsistent with node `type`, which IS namespaced.)
+- **No node DELETE** — `DELETE /v1/nodes/:id` → 404 (route not found). Mistaken/test nodes can't be removed (supersede instead).
 
 ## Other endpoints
 - `POST /v1/namespaces {slug}` (201; 409 if exists). `GET /v1/namespaces/:slug/nodes`.

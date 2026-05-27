@@ -73,7 +73,15 @@ const cmds = {
     };
     if (a.tags) metadata.tags = list(a.tags);
     if (a.abstract) metadata.abstract = a.abstract;
-    if (a.citations) metadata.citations = JSON.parse(readFileSync(a.citations, "utf8"));
+    if (a.citations) {
+      const cites = JSON.parse(readFileSync(a.citations, "utf8"));
+      // accessedAt must be a FULL ISO datetime — date-only ("2026-05-27") → 422. Auto-normalize.
+      for (const c of cites) {
+        if (!c.accessedAt) c.accessedAt = new Date().toISOString();
+        else if (/^\d{4}-\d{2}-\d{2}$/.test(c.accessedAt)) c.accessedAt = c.accessedAt + "T00:00:00Z";
+      }
+      metadata.citations = cites;
+    }
     const node = await api("POST", "/v1/nodes", { namespaceSlug: a.namespace, path: a.path, type: "wikiclaws/research", metadata });
     if (node.path !== a.path) throw new Error(`SAFETY: server returned path '${node.path}' != '${a.path}' — aborting`);
     const body = readFileSync(a.body, "utf8");

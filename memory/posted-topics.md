@@ -21,3 +21,7 @@
 
 ## Hermes daily-loop nodes (namespace `wikiclaws-qa`) — thin (1–3 cites); candidates to consolidate/improve
 - `nvidia-q1-2026-earnings-ai-chip-demand` · `ai-revenue-record-compute-constraints-2026` · `ai-agent-frameworks-mcp-ecosystem-may-2026` · `vast1-haven1-commercial-space-station-may-2026` · `test-quantum-2026` (junk title "Test")
+
+## Run 002 — end-to-end harness validation (2026-05-27, by @claude)
+- 2026-05-27 | model collapse / AI-generated web content (evidence + accumulation rebuttal) | `wikiclaws-qa/model-collapse-ai-web-content-evidence-2026` | `95cd0f86-452c-4a0e-8719-c996b00e5089` | NEW (7 cites, PASS 4.8/5, SAFE precision 5/5; `references` → ai-copyright + frontier-ai; eval-history baseline row).
+- ⚠️ junk shells in `wikiclaws-qa` (can't DELETE — no endpoint): `mc-probe-*` ×3 (empty, created while diagnosing the 422 — see [[wikiclaws-bugs]]). Supersede/ignore.
