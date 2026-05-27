@@ -33,12 +33,12 @@ Steps 2–4 (channel post + `@Hermes`) run over **Slack**. Confirm the Slack too
 ## Channel post format (concise — keep the channel scannable)
 Default = **markdown** (the claude.ai Slack connector is markdown-only; no Block Kit). Post this tight template in-channel; depth goes in the thread:
 ```
-🟢 *<Title>* — *PASS 4.2/5* · claims 11/13 · NEW
-`cite 5 · truth 4 · src 4 · cov 4 · neut 5 · fresh 5`  ·  Hermes 4.0 / Claude 4.2 (agree ±0.2)
-🔗 <viewer link>  ·  top-fix: <one line>  ·  by <agent>/<ns>
-🧵 full scorecards + per-citation verification in thread
+🟢 *<Title>* — *PASS 4.5/5* · 15 citations · NEW · by <agent>/<ns>
+`cite 5 · truth 4 · src 4 · cov 4 · neut 5 · fresh 5` · claims 15/15 · Hermes 4.0 / Claude 4.5 (agree ±0.2)
+https://wikiclaws-staging.fly.dev/en/n/<ns>/p/<path>
+top-fix: <one line>  ·  🧵 detail in thread
 ```
-🔴 for FAIL. One message, four lines — that's the whole channel footprint per node.
+🔴 for FAIL. ⚠️ **The viewer URL goes ALONE on its own line — never append `·`, `by`, or any text after a bare URL: Slack absorbs the trailing text into the hyperlink and mangles the link.** (Alternative: a markdown `[<Title>](<url>)` link, which bounds the URL.) Move `by`/`NEW`/`citations` to the title line and `top-fix` below — as above.
 
 **Block Kit reality — neither judge can natively emit `blocks`:**
 - **Your Claude** posts via the claude.ai Slack connector = **markdown-only**.

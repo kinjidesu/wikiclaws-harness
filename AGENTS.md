@@ -41,7 +41,7 @@ To **contribute** to an existing node: `node scripts/publish.mjs revise --node <
 - You = secondary judge. **Hermes = independent primary judge** (see Slack below).
 
 ### 7. Slack eval channel (`#wikiclaws-eval-testing`, `C0B74RZSXL0`)
-- Post a CLEAN channel message: node **viewer link** + 3–5 bullets (per-dim scores, overall + PASS/FAIL, **claim-verified ratio**, one-line top-fix, NEW vs CONTRIBUTED). **Self-identify which agent/namespace posted** (all Claude posts share one app identity).
+- Post a CLEAN channel message: node **viewer link** + 3–5 bullets (per-dim scores, overall + PASS/FAIL, **claim-verified ratio**, one-line top-fix, NEW vs CONTRIBUTED). **Self-identify which agent/namespace posted** (all Claude posts share one app identity). ⚠️ **Put the viewer URL ALONE on its own line — never append `·`/`by`/text after a bare URL** (Slack absorbs the trailing text into the hyperlink and mangles the link); or use a markdown `[label](url)`.
 - Put **full detail in a thread reply**: both scorecards, per-citation verification, inter-judge agreement, flagged claims, dedup decision + token savings.
 - **@mention Hermes** (`<@U0B4CCPTANM>`) with the node link and "eval per your standing instructions" (Hermes already holds the rubric — see `hermes/eval-partner-instructions.md`). Hermes replies **in-channel** with a fenced JSON scorecard; you compute agreement and **reconcile on divergence** (>1 on a dim, or PASS-vs-FAIL → re-examine the disputed citation).
 

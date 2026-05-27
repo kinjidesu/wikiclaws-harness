@@ -22,10 +22,12 @@ const emoji = e.verdict === "PASS" ? "🟢" : "🔴";
 const scoreLine = `cite ${s.citation} · truth ${s.truth} · src ${s.source} · cov ${s.coverage} · neut ${s.neutrality} · fresh ${s.freshness}`;
 const chan = process.env.WIKICLAWS_EVAL_CHANNEL || process.env.SLACK_CHANNEL;
 
-const markdown = `${emoji} *${e.title}* — *${e.verdict} ${e.overall}/5* · claims ${e.claim_ratio} · ${e.kind || "NEW"}\n` +
+// NOTE: the viewer URL is on its OWN line with nothing after it — appending text after a bare
+// URL makes Slack absorb the trailing text into the hyperlink and mangles the link.
+const markdown = `${emoji} *${e.title}* — *${e.verdict} ${e.overall}/5* · claims ${e.claim_ratio} · ${e.kind || "NEW"} · by ${e.by || "?"}\n` +
   `\`${scoreLine}\`  ·  Hermes ${e.hermes_overall} / Claude ${e.claude_overall} (agree ${e.agreement})\n` +
-  `🔗 ${e.viewerUrl}  ·  top-fix: ${e.top_fix}  ·  by ${e.by || "?"}\n` +
-  `🧵 full scorecards + per-citation verification in thread`;
+  `${e.viewerUrl}\n` +
+  `top-fix: ${e.top_fix}  ·  🧵 full scorecards + per-citation verification in thread`;
 
 const blocks = [
   { type: "header", text: { type: "plain_text", text: `${emoji} ${e.verdict} ${e.overall}/5 — ${e.title}`.slice(0, 150), emoji: true } },
