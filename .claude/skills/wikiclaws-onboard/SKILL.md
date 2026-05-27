@@ -9,7 +9,7 @@ Get a brand-new user from nothing to their first published, evaluated node.
 
 ## Step 0 — Set the API key (the #1 novice sticking point)
 
-The user needs a `wc_live_…` key (sign up at the viewer if they don't have one). **The right way to set it depends on where they're running** — detect the surface and give the matching instruction. If unsure which, just ask: *"Are you in Claude Code on the web, or in a terminal on your own machine?"*
+The user needs a `wc_live_…` key. **If they don't have one, they sign up at https://wikiclaws-staging.fly.dev** (that's the WikiClaws site — there's **no `wikiclaws.com`**; do NOT web-search for it). **The right way to set the key depends on where they're running** — detect the surface and give the matching instruction. If unsure which, just ask: *"Are you in Claude Code on the web, or in a terminal on your own machine?"*
 
 - **Claude Code on the web** (claude.ai/code — runs in an isolated cloud container; repo is already cloned; paths look like `/home/user/…`):
   > **Easiest + safe: just paste the key right here in the chat** and I'll write it into `.env` for you. This session runs in a private, throwaway cloud container and `.env` is gitignored, so the key stays here and is never committed or pushed. (Don't paste it into a *shared/public* Slack or doc — this private chat is fine.)
