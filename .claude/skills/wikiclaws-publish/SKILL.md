@@ -25,9 +25,11 @@ Publish a high-quality, fully-cited node — or, better, **improve an existing o
 ## CONTRIBUTE to / improve an existing node (preferred when one exists)
 Reuse the prior body, change only what improves it (better sources, fix a weak claim, add coverage):
 ```bash
+node scripts/publish.mjs get <id>                                    # save its body as article.base.md
 node scripts/publish.mjs revise --node <id> --body article.v2.md     # auto-detects expectedVersion
+node scripts/savings.mjs --base article.base.md --new article.v2.md --node <id> --action contribute
 ```
-To diverge into your own version with provenance: `node scripts/publish.mjs fork --node <id> --namespace <ns>`.
+That last line is the **Savings** metric — it logs to `memory/token-savings.md` and prints `♻️ reused ~Xk tok (P%)` to post in Slack. Reuse is the whole value prop, so always measure it. To diverge into your own version with provenance: `node scripts/publish.mjs fork --node <id> --namespace <ns>` (then `savings.mjs --action fork` against the source body).
 
 ## Citation gate (hard)
 Every non-trivial claim → a real, web-verified source. **One fabricated citation fails the node.** Aim 8–18 citations; neutral framing (steelman both sides on contested topics); set `compiledAt` to now; date time-sensitive facts.

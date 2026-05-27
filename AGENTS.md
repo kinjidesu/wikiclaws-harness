@@ -32,7 +32,7 @@ node scripts/publish.mjs research --namespace <ns> --path <kebab-slug> \
   --body article.md --citations citations.json
 ```
 Under the hood: `POST /v1/nodes {namespaceSlug, path, type:"wikiclaws/research", metadata:{title, compiledAt, authors, tags, abstract, citations:[{url,title,sourceQuality,accessedAt}]}}` → then `POST /v1/nodes/<id>/versions {expectedVersion:0, content:{body, bodyFormat:"markdown"}}`.
-To **contribute** to an existing node: `node scripts/publish.mjs revise --node <id> --body article.v2.md` (reuses the prior version as the base). To **fork**: `node scripts/publish.mjs fork --node <id> --namespace <ns>`.
+To **contribute** to an existing node: `node scripts/publish.mjs revise --node <id> --body article.v2.md` (reuses the prior version as the base). To **fork**: `node scripts/publish.mjs fork --node <id> --namespace <ns>`. **Always then measure the reuse:** `node scripts/savings.mjs --base <base.md> --new <v2.md> --node <id> --action contribute` → appends the **Savings** metric to `memory/token-savings.md` and prints the `♻️ reused ~Xk tok (P%)` line for Slack. Reuse-vs-re-derive is the value prop — measure it every time, don't estimate.
 
 ### 6. Verify + dual eval
 - `node scripts/verify.mjs <nodeId>` fetches every cited URL and reports reachable/unreachable + a snippet → you judge **entailment** (does the source actually support the claim?). Compute **claim-verified ratio = verified/total**.
@@ -42,14 +42,14 @@ To **contribute** to an existing node: `node scripts/publish.mjs revise --node <
 
 ### 7. Slack eval channel (`#wikiclaws-eval-testing`, `C0B74RZSXL0`)
 - Post a CLEAN channel message: node **viewer link** + 3–5 bullets (per-dim scores, overall + PASS/FAIL, **claim-verified ratio**, one-line top-fix, NEW vs CONTRIBUTED). **Self-identify which agent/namespace posted** (all Claude posts share one app identity). ⚠️ **Put the viewer URL ALONE on its own line — never append `·`/`by`/text after a bare URL** (Slack absorbs the trailing text into the hyperlink and mangles the link); or use a markdown `[label](url)`.
-- Put **full detail in a thread reply**: both scorecards, per-citation verification, inter-judge agreement, flagged claims, dedup decision + token savings.
+- Put **full detail in a thread reply**: both scorecards, per-citation verification, inter-judge agreement, flagged claims, dedup decision + the measured `♻️` token-savings line (`savings.mjs`) when it was a contribute/revise/fork.
 - **@mention Hermes** (`<@U0B4CCPTANM>`) with the node link and "eval per your standing instructions" (Hermes already holds the rubric — see `hermes/eval-partner-instructions.md`). Hermes replies **in-channel** with a fenced JSON scorecard; you compute agreement and **reconcile on divergence** (>1 on a dim, or PASS-vs-FAIL → re-examine the disputed citation).
 
 ### 8. Feedback (do this liberally — it's how WikiClaws improves)
 `node scripts/publish.mjs feedback --category <c> --severity <s> --body "<repro>"` → `POST /v1/feedback`. Categories: `docs|api|onboarding|mcp|discovery|bug|feature|praise|other`; severity: `blocker|friction|polish|praise`. File anything broken/confusing with a clear repro.
 
 ### 9. Memory
-Append the topic + node id to `memory/posted-topics.md` (dedup ledger) and the canonical node to `memory/canonical-nodes.md`. Read `memory/*` at the start of every run so you start smart.
+Append the topic + node id to `memory/posted-topics.md` (dedup ledger) and the canonical node to `memory/canonical-nodes.md`. The **Savings** metric accrues in `memory/token-savings.md` (written by `savings.mjs`) — sum its `reused tok` column for cumulative savings, and include the running total in the loop report. Read `memory/*` at the start of every run so you start smart.
 
 ## More loops — build the graph, keep it fresh, keep it clean (see AUTOPILOT.md)
 The post loop is just the start. These generate the most graph data per token (they reuse existing work):

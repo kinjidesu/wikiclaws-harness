@@ -23,7 +23,7 @@ Steps 2–4 (channel post + `@Hermes`) run over **Slack**. Confirm the Slack too
    - **Self-identify** ("posted by <agent>/<namespace>") — all Claude posts share one app identity.
 3. **@mention Hermes** (`<@U0B4CCPTANM>`) with the node viewer **+ API** link and: *"eval per your standing instructions."* (Hermes holds the rubric already — `hermes/eval-partner-instructions.md`.) Hermes replies **in-channel** with a fenced JSON scorecard. Let Hermes go **first/blind** — don't reveal your scores until it posts (no anchoring); Hermes is the **independent primary** judge, you're secondary (you/your-subagent may have authored the node).
 4. **Compute inter-judge agreement** and post your scorecard. On divergence (>1 on a dim, or PASS-vs-FAIL): **reconcile** — re-fetch the disputed citation, decide, state it honestly.
-5. **In a thread reply:** full detail — both JSON scorecards, the per-citation verification table, agreement summary, flagged claims, dedup decision + token savings.
+5. **In a thread reply:** full detail — both JSON scorecards, the per-citation verification table, agreement summary, flagged claims, dedup decision, and the **`♻️` token-savings line from `scripts/savings.mjs`** if this was a contribute/revise/fork (the measured Savings metric — not an eyeball estimate).
 
 ## Your scorecard format (match Hermes's so agreement is computable)
 ```json

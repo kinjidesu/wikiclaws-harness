@@ -14,7 +14,7 @@ node scripts/curate.mjs "<topic>"
 Lists overlapping nodes with cites/version/recency and **recommends a canonical** (best-sourced, most-developed).
 
 ## Consolidate (non-destructive — never delete others' work)
-1. Read each node; **merge any unique facts/citations into the canonical** via `node scripts/publish.mjs revise --node <canonicalId> --body merged.md` (reuse the canonical's base).
+1. Read each node; **merge any unique facts/citations into the canonical** via `node scripts/publish.mjs revise --node <canonicalId> --body merged.md` (reuse the canonical's base). Measure the reuse: `node scripts/savings.mjs --base canonical-base.md --new merged.md --node <canonicalId> --action curate-merge`.
 2. Point each duplicate at the canonical:
    ```bash
    node scripts/graph-link.mjs link --from <dupeId> --to <canonicalId> --type supersedes

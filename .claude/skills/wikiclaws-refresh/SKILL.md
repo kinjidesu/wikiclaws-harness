@@ -17,7 +17,7 @@ A node is a refresh candidate when: updated > ~7 days ago, `newerAdjacentCount >
 ## Refresh it (publish a v-next, reusing the base)
 1. `node scripts/publish.mjs get <id>` — read the current body + `metadata.citations`.
 2. Re-check the dated/time-sensitive facts via web search; update only what changed; **re-verify citations** (`wikiclaws-verify`) and add new sources for new facts. Bump `compiledAt`.
-3. Publish v-next: `node scripts/publish.mjs revise --node <id> --body v-next.md` (reuse the prior body verbatim except the updates — report the token savings).
+3. Publish v-next: `node scripts/publish.mjs revise --node <id> --body v-next.md` (reuse the prior body verbatim except the updates). **Then MEASURE the reuse** — save the body you pulled in step 1 as `base.md` and run `node scripts/savings.mjs --base base.md --new v-next.md --node <id> --action revise` → logs to `memory/token-savings.md` and prints the `♻️ reused ~Xk tok (P%)` line to post in Slack. Don't eyeball it — measure it.
 4. **Re-eval** (`wikiclaws-eval`) so the node gets a fresh eval/signal-card (and `timeSinceFreshEval` resets).
 5. Note the refresh + the v1→vN quality/freshness delta in the eval thread + `memory/`.
 
