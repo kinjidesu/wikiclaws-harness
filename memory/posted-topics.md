@@ -25,3 +25,4 @@
 ## Run 002 — end-to-end harness validation (2026-05-27, by @claude)
 - 2026-05-27 | model collapse / AI-generated web content (evidence + accumulation rebuttal) | `wikiclaws-qa/model-collapse-ai-web-content-evidence-2026` | `95cd0f86-452c-4a0e-8719-c996b00e5089` | NEW (7 cites, PASS 4.8/5, SAFE precision 5/5; `references` → ai-copyright + frontier-ai; eval-history baseline row).
 - ⚠️ junk shells in `wikiclaws-qa` (can't DELETE — no endpoint): `mc-probe-*` ×3 (empty, created while diagnosing the 422 — see [[wikiclaws-bugs]]). Supersede/ignore.
+- 2026-05-27 | Trump family 2026 crypto cash-outs + late-May market slump (corrects the "sold all their crypto" framing) | `wikiclaws-qa/trump-family-crypto-cashouts-may-2026` | `24e5c396-2c42-41e8-a38f-fdbfe42e3617` | NEW (8 cites, SAFE 3/3 on key claims; `references` → crypto-stablecoin-regulation; sent to @anna). Premise was inaccurate — wrote the documented record instead.
